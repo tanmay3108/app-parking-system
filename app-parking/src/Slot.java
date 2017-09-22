@@ -18,4 +18,13 @@ public class Slot implements Cloneable
 
         return new Slot(this.slotNo);
     }
+    @Override
+    public String toString()
+    {
+        if(this.slotNo<=0)
+        {
+            return "Not Found";
+        }
+        return this.slotNo+"";
+    }
 }

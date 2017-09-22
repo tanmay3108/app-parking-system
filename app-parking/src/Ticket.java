@@ -22,6 +22,10 @@ public class Ticket
     @Override
     public String toString()
     {
+        if(this == null)
+        {
+            return "";
+        }
         if(this.slot.getSlotNo() < 0)
         {
             return "Slot number "+ this.slot.getSlotNo()*-1 +" is free";

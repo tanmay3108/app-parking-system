@@ -27,4 +27,38 @@ public class Vehicle
     {
         return "Color "+this.color+"Reg No "+this.regNo;
     }
+    @Override
+    public boolean equals(Object o)
+    {
+        if(o == null)
+            return false;
+        if(o == this)
+            return true;
+        if (!(o instanceof Vehicle)) {
+            return false;
+        }
+        String color = this.getColor().toString();
+        String color2 = ((Vehicle)o).getColor().toString();
+        String regNo = this.getRegNo().toString();
+        String regNo2 = ((Vehicle)o).getRegNo().toString();
+        if(color.equalsIgnoreCase(color2))
+        {
+            if(regNo.equalsIgnoreCase(regNo2))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime =31;
+        int result = 1;
+        result = prime*result+ this.getRegNo().hashCode();
+        result = prime*result+ this.getColor().hashCode();
+        return result;
+    }
+
 }
