@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public interface Parking
 {
      Slot getSlotByRegId(Object regId);
-     ArrayList<Vehicle> getSlotsByColor(Object color);
-     ArrayList<Vehicle> getRegNosByColor(Object color);
+     ArrayList<Ticket> getSlotsByColor(Object color);
+     ArrayList<Ticket> getRegNosByColor(Object color);
      void reset();
      Ticket park(String regNo, String color);
      Ticket leave(int slot);

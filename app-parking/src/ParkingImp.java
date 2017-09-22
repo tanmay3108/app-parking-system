@@ -5,11 +5,12 @@ import java.awt.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class ParkingImp implements Parking
 {
     private ArrayList<Vehicle> parking;
-    private HashMap<String,ArrayList<Vehicle>> colorVsVehicle;
+    private HashMap<String,ArrayList<Ticket>> colorVsTicket;
     private HashMap<Long,Slot> regVsSlot;
     private int park_capacity;
     private int next_park_location;
@@ -17,12 +18,13 @@ public class ParkingImp implements Parking
 
     private ParkingImp(int no_slots)
     {
-        parking = new ArrayList<Vehicle>(no_slots);
-        colorVsVehicle = new HashMap<>();
+        parking = new ArrayList<Vehicle>(no_slots+1);
+        parking.add(0, new Vehicle(null,null));
+        colorVsTicket = new HashMap<>();
         regVsSlot = new HashMap<>();
         park_capacity = no_slots;
         slotsAvailable = park_capacity;
-        next_park_location = 0;
+        next_park_location = 1;
 
 
     }
@@ -44,21 +46,33 @@ public class ParkingImp implements Parking
         return slotId.clone();
     }
 
-    private ArrayList<Vehicle> getVehicleByColor(Object color)
+    private ArrayList<Ticket> getTicketByColor(Object color)
     {
-        ArrayList<Vehicle> vehicle_list = colorVsVehicle.get(color);
+        ArrayList<Ticket> vehicle_list = colorVsTicket.get(color);
         return vehicle_list;
     }
     @Override
-    public ArrayList<Vehicle>  getSlotsByColor(Object color)
+    public ArrayList<Ticket> getSlotsByColor(Object color)
     {
-        ArrayList<Vehicle> vehicle_list = colorVsVehicle.get(color);
+        ArrayList<Ticket> vehicle_list = colorVsTicket.get(color);
+        if(vehicle_list == null)
+        {
+            System.out.println("Not Found");
+            return null;
+        }
+        Iterator<Ticket> ite = vehicle_list.iterator();
+
+        while (ite.hasNext())
+        {
+            System.out.print((ite.next().getSlot().getSlotNo())+" ");
+        }
+        System.out.println();
         return vehicle_list;
     }
     @Override
-    public ArrayList<Vehicle> getRegNosByColor(Object color)
+    public ArrayList<Ticket> getRegNosByColor(Object color)
     {
-        ArrayList<Vehicle> vehicle_list = colorVsVehicle.get(color);
+        ArrayList<Ticket> vehicle_list = colorVsTicket.get(color);
         return vehicle_list;
     }
     @Override
@@ -85,7 +99,7 @@ public class ParkingImp implements Parking
         slotsAvailable--;
         Ticket ticket = new Ticket(v,new Slot(next_park_location));
         updateNextParkingSlot();
-        updateColorMap(v);
+        updateColorMap(ticket);
         updateRegMap(v);
 
         return ticket;
@@ -100,15 +114,16 @@ public class ParkingImp implements Parking
         }
         if(getAvailability() == park_capacity ) {//Throw Exception No car found exception
         }
-        Vehicle v =parking.get(slot-1);
+        Vehicle v =parking.get(slot);
         if(v == null) {//throw car not found exception
         }
-        parking.remove(slot-1);
-        parking.add(slot-1,null);
+        parking.remove(slot);
+        parking.add(slot,null);
+        Ticket ticket = new Ticket(v, new Slot((slot)*-1));
         updateNextParkingSlot();
-        updateColorMap(v);
+        updateColorMap(ticket);
         updateRegMap(v);
-        return new Ticket(v, new Slot(slot*-1));
+        return ticket;
     }
     @Override
     public void  status()
@@ -120,9 +135,9 @@ public class ParkingImp implements Parking
     {
 
         StringBuilder s = new StringBuilder("Slot No.\tRegistration No.\tColor");
-        for(int i =0;i<park_capacity;i++)
+        for(int i =1;i<park_capacity;i++)
         {
-            int slotNo = i+1;
+            int slotNo = i;
             Vehicle v =parking.get(i);
             if(v == null)
                 continue;
@@ -133,12 +148,44 @@ public class ParkingImp implements Parking
 
     private void updateNextParkingSlot()
     {
+        parking.remove(0);
+        parking.add(0, new Vehicle(null,null));
         next_park_location = parking.indexOf(null);
 
     }
 
-    private void updateColorMap(Vehicle v)
+    private void updateColorMap(Ticket t)
     {
+        Vehicle v = t.getVehicle();
+        int slot = t.getSlot().getSlotNo();
+        String color = (String)v.getColor();
+        if(colorVsTicket.get(color)== null)
+        {
+           ArrayList<Ticket> tickets_list = new ArrayList<Ticket>();
+
+           tickets_list.add(t);
+           colorVsTicket.put(color,tickets_list);
+        }
+        else
+        {
+
+            if(slot>0)
+            {
+                colorVsTicket.get(color).add(t);
+
+            }
+
+            else
+            {
+                //System.out.println("Slot number:::: "+slot);
+                ArrayList<Ticket> a = colorVsTicket.get(color);
+                a.remove((t));
+
+                if(colorVsTicket.get(color).size() == 0)
+                    colorVsTicket.put(color,null);
+            }
+
+        }
 
     }
     private void updateRegMap(Vehicle v)
@@ -153,23 +200,26 @@ public class ParkingImp implements Parking
     public static void main(String args[])
     {
 
-        ParkingImp obj = ParkingImp.initilize(6);
+        ParkingImp obj = ParkingImp.initilize(7);
         System.out.println(obj.park("MM-123-pp-123", "white"));
         System.out.println(obj.park("UP-32-EZ-420","black"));
-        System.out.println("Availability "+obj.getAvailability());
+        System.out.println(obj.park("Uk-32-EZ-420","black"));
+        System.out.println(obj.park("Uk-32-EZ-420","black"));
+        System.out.println(obj.park("Uk-32-EZ-420","black"));
+        System.out.println(obj.park("Uk-32-EZ-420","black"));
         System.out.println(obj.park("Uk-32-EZ-420","black"));
         obj.status();
+        obj.getSlotsByColor("black");
+        obj.getSlotsByColor("white");
         System.out.println(obj.leave(2));
-        System.out.println("Availability "+obj.getAvailability());
-        System.out.println("Next Parking Slot "+(obj.next_park_location+1));
         obj.status();
-        System.out.println(obj.park("TN-32-EZ-420","Black"));
+        System.out.println(obj.leave(3));
+        obj.getSlotsByColor("black");
+        System.out.println(obj.park("KL-123-pp-123", "black"));
+        obj.getSlotsByColor("black");
         obj.status();
-
-
-
-
-
+        //System.out.println("Availability "+obj.getAvailability());
+        //obj.getSlotsByColor("black");
 
     }
 
