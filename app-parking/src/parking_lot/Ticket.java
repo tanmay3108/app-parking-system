@@ -27,6 +27,10 @@ public class Ticket
         {
             return "";
         }
+        if(this.getVehicle() == null)
+        {
+            return "Not found";
+        }
         if(this.slot.getSlotNo() < 0)
         {
             return "Slot number "+ this.slot.getSlotNo()*-1 +" is free";

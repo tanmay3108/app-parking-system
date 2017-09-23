@@ -143,7 +143,10 @@ public class ParkingImp implements Parking
             System.out.println("Not Found");
         }
         Vehicle v =parking.get(slot);
-        if(v == null) {//throw car not found exception
+        if(v == null)
+        {
+            Ticket ticket = new Ticket(v, new Slot((slot)*-1));
+            return ticket;
         }
         parking.remove(slot);
         parking.add(slot,null);
@@ -236,6 +239,15 @@ public class ParkingImp implements Parking
     public int getAvailability()
     {
         return slotsAvailable;
+    }
+
+    public int getParkCapacity()
+    {
+        return park_capacity;
+    }
+    public int getNextParkLocation()
+    {
+        return next_park_location;
     }
     public static void main(String args[])
     {
