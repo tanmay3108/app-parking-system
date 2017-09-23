@@ -1,32 +1,29 @@
-package parking_lot;
 /**
  * Created by Tanmay on 22-09-2017.
  */
 
-import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+package parking_lot;
+
+import java.util.*;
 
 public class ParkingImp implements Parking
 {
-    private ArrayList<Vehicle> parking;
-    private HashMap<String,ArrayList<Ticket>> colorVsTicket;
-    private HashMap<Object,Slot> regVsSlot;
+    private List<Vehicle> parking;
+    private Map<String,ArrayList<Ticket>> colorVsTicket;
+    private Map<Object,Slot> regVsSlot;
     private int park_capacity;
     private int next_park_location;
     private int slotsAvailable;
 
     private ParkingImp(int no_slots)
     {
-        parking = new ArrayList<Vehicle>(no_slots);
-        parking.add(0, new Vehicle("Dummy","Dummy"));
+        parking = new ArrayList<>(no_slots);
+        parking.add(0, ParkingLotConstants.DUMMYVEHICLE);
         colorVsTicket = new HashMap<>();
         regVsSlot = new HashMap<>();
         park_capacity = no_slots-1;
         slotsAvailable = park_capacity;
-        next_park_location = 1;
+        next_park_location = ParkingLotConstants.FIRSTPARKINGSPOT;
 
 
     }
@@ -63,14 +60,19 @@ public class ParkingImp implements Parking
         ArrayList<Ticket> vehicle_list = getTicketByColor(color.toString().toUpperCase());
         if(vehicle_list == null)
         {
-            System.out.println("Not Found");
+            System.out.println(ParkingLotConstants.NOT_FOUND);
             return null;
         }
-        Iterator<Ticket> ite = vehicle_list.iterator();
 
-        while (ite.hasNext())
+        int c = 0;
+        for (Ticket ite: vehicle_list)
         {
-            System.out.print((ite.next().getSlot().getSlotNo())+" ");
+            if(c!=0)
+            {
+                System.out.print(", ");
+            }
+            c++;
+            System.out.print((ite.getSlot().getSlotNo())+"");
         }
         System.out.println();
         return vehicle_list;
@@ -81,15 +83,20 @@ public class ParkingImp implements Parking
         ArrayList<Ticket> vehicle_list = getTicketByColor(color.toString().toUpperCase());
         if(vehicle_list == null)
         {
-            System.out.println("Not Found");
+            System.out.println(ParkingLotConstants.NOT_FOUND);
             return null;
         }
-        Iterator<Ticket> ite = vehicle_list.iterator();
-
-        while (ite.hasNext())
+        int c = 0;
+        for (Ticket ite: vehicle_list)
         {
-            System.out.print((ite.next().getVehicle().getRegNo())+" ");
+            if(c!=0)
+            {
+                System.out.print(", ");
+            }
+            c++;
+            System.out.print((ite.getVehicle().getRegNo())+"");
         }
+
         System.out.println();
         return vehicle_list;
     }
@@ -113,12 +120,8 @@ public class ParkingImp implements Parking
         }
         if(getAvailability() == 0)
         {
-
-            System.out.println("Sorry, parking lot is full");
-            return null;
+            return new Ticket(null,new Slot(ParkingLotConstants.PARKINGFULL));
         }
-        Object color = v.getColor();
-        Object regNo = v.getRegNo();
         parking.remove(next_park_location);
         parking.add(next_park_location,v);
         slotsAvailable--;
@@ -126,7 +129,6 @@ public class ParkingImp implements Parking
         updateNextParkingSlot();
         updateColorMap(ticket);
         updateRegMap(ticket);
-
         return ticket;
 
     }
@@ -140,13 +142,12 @@ public class ParkingImp implements Parking
         }
         if(getAvailability() == park_capacity )
         {
-            System.out.println("Not Found");
+            System.out.println(ParkingLotConstants.NOT_FOUND);
         }
         Vehicle v =parking.get(slot);
         if(v == null)
         {
-            Ticket ticket = new Ticket(v, new Slot((slot)*-1));
-            return ticket;
+            return new Ticket(null, new Slot((slot)*-1));
         }
         parking.remove(slot);
         parking.add(slot,null);
@@ -166,14 +167,14 @@ public class ParkingImp implements Parking
     public String toString()
     {
 
-        StringBuilder s = new StringBuilder("Slot No\t\tRegistration No.\t\tColor");
+        StringBuilder s = new StringBuilder("Slot No.\t\tRegistration No\t\tColour");
         for(int i =1;i<=park_capacity;i++)
         {
             int slotNo = i;
             Vehicle v =parking.get(i);
             if(v == null)
                 continue;
-            s.append("\n").append(slotNo).append("\t\t\t").append(v.getRegNo()).append("\t\t\t").append(v.getColor());
+            s.append("\n").append(slotNo).append("\t\t\t").append(v.getRegNo()).append("\t\t\t").append(v.getColor().getColorValue());
         }
         return s.toString();
     }
@@ -181,7 +182,7 @@ public class ParkingImp implements Parking
     private void updateNextParkingSlot()
     {
         parking.remove(0);
-        parking.add(0, new Vehicle("Dummy","Dummy"));
+        parking.add(0, ParkingLotConstants.DUMMYVEHICLE);
         next_park_location = parking.indexOf(null);
 
     }
@@ -190,11 +191,11 @@ public class ParkingImp implements Parking
     {
         Vehicle v = t.getVehicle();
         int slot = t.getSlot().getSlotNo();
-        String color = (String)v.getColor();
-        color.toUpperCase();
+        String color = v.getColor().getColorValue();
+        color = color.toUpperCase();
         if(colorVsTicket.get(color)== null)
         {
-           ArrayList<Ticket> tickets_list = new ArrayList<Ticket>();
+           ArrayList<Ticket> tickets_list = new ArrayList<>();
 
            tickets_list.add(t);
            colorVsTicket.put(color,tickets_list);
@@ -209,7 +210,7 @@ public class ParkingImp implements Parking
 
             else
             {
-                //System.out.println("Slot number:::: "+slot);
+
                 ArrayList<Ticket> a = colorVsTicket.get(color);
                 a.remove((t));
                 if(colorVsTicket.get(color).size() == 0)
@@ -240,7 +241,6 @@ public class ParkingImp implements Parking
     {
         return slotsAvailable;
     }
-
     public int getParkCapacity()
     {
         return park_capacity;
@@ -249,32 +249,6 @@ public class ParkingImp implements Parking
     {
         return next_park_location;
     }
-    public static void main(String args[])
-    {
 
-        ParkingImp obj = ParkingImp.initilize(6);
-        System.out.println(obj.park("KA-01-HH-1234", "white"));
-        System.out.println(obj.park("KA-01-HH-9999", "white"));
-        System.out.println(obj.park("KA-01-BB-0001", "black"));
-        System.out.println(obj.park("KA-01-HH-7777", "Red"));
-        System.out.println(obj.park("KA-01-HH-2701", "Blue"));
-        System.out.println(obj.park("KA-01-HH-3141", "Black"));
-        System.out.println(obj.leave(4));
-        obj.status();
-        //System.out.println(obj.getAvailability());
-
-        System.out.println(obj.park("KA-01-P-333", "White"));
-        System.out.println(obj.park("DL-12-AA-9999", "White"));
-        obj.getRegNosByColor("White");
-        obj.getSlotsByColor("White");
-        System.out.println(obj.getSlotByRegId("KA-01-HH-3141"));
-        System.out.println(obj.getSlotByRegId("MH-04-AY-1111"));
-
-
-
-
-
-
-    }
 
 }

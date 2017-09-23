@@ -5,13 +5,13 @@ package parking_lot;
 public class Vehicle
 {
     private Object regNo;
-    private Object color;
+    private Color color;
     public Vehicle(Object regNo,Object color)
     {
         this.regNo =regNo;
-        this.color = color;
+        this.color = Color.valueOf(color.toString());
     }
-    public Object getColor()
+    public Color getColor()
     {
         return this.color;
     }
@@ -26,6 +26,7 @@ public class Vehicle
     @Override
     public String toString()
     {
+
         return "Color "+this.color+"Reg No "+this.regNo;
     }
     @Override

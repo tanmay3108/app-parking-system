@@ -27,9 +27,13 @@ public class Ticket
         {
             return "";
         }
+        if(this.getSlot().getSlotNo() == ParkingLotConstants.PARKINGFULL)
+        {
+            return "Sorry, parking lot is full";
+        }
         if(this.getVehicle() == null)
         {
-            return "Not found";
+            return ParkingLotConstants.NOT_FOUND;
         }
         if(this.slot.getSlotNo() < 0)
         {

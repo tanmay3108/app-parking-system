@@ -24,7 +24,7 @@ public class Slot implements Cloneable
     {
         if(this.slotNo<=0)
         {
-            return "Not Found";
+            return ParkingLotConstants.NOT_FOUND;
         }
         return this.slotNo+"";
     }
