@@ -2,7 +2,7 @@
 Synopsis
 Designing a Parking Lot with  oops principle
 
-Project Structure
+Project Structure(Intellij)
 app-parking-design
 *  .idea files
 *  app-parking
@@ -12,3 +12,6 @@ app-parking-design
 *    *  parking_lot  *Contains the crux of the Project*
 parking_lot          *Bat file to run ParkDemo..should be run from out/production/app-parking*
 file_input.txt       *Input file should be present in out/production/app-parking.  
+
+Note-For Linux run ParkingDemo from out/production/app-parking folder with file_input.txt or without any arguments for
+interactive shell
