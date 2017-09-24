@@ -81,7 +81,7 @@ public class TestTest
         }
 
         parking_lot.leave(1);
-        parking_lot.leave(1);
+        System.out.println(parking_lot.leave(1));
         assertEquals(1,parking_lot.getNextParkLocation());
     }
     @Test

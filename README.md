@@ -1,6 +1,6 @@
 # app-parking-system
 Synopsis
-Designinh a Parking Lot with  oops principle
+Designing a Parking Lot with  oops principle
 
 Project Structure
 app-parking-design

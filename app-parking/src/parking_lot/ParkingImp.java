@@ -140,10 +140,7 @@ public class ParkingImp implements Parking
             System.out.println("Invalid Slot Id");
             return null;
         }
-        if(getAvailability() == park_capacity )
-        {
-            System.out.println(ParkingLotConstants.NOT_FOUND);
-        }
+
         Vehicle v =parking.get(slot);
         if(v == null)
         {

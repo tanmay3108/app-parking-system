@@ -21,6 +21,9 @@ public class Vehicle
     }
     public boolean verifyRegNo(Object regNo)
     {
+        /*
+         In future if we need to verify Reg Number pattern
+         */
         return false;
     }
     @Override
