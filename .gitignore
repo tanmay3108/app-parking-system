@@ -37,3 +37,4 @@ overridedb.*
 .factorypath
 *.log
 *.dat
+.idea
