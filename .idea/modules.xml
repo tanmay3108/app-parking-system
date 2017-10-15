@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app-parking/app-parking.iml" filepath="$PROJECT_DIR$/app-parking/app-parking.iml" />
       <module fileurl="file://$PROJECT_DIR$/app-parking-system.iml" filepath="$PROJECT_DIR$/app-parking-system.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app-parking-system_main.iml" filepath="$PROJECT_DIR$/.idea/modules/app-parking-system_main.iml" group="app-parking-system" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app-parking-system_test.iml" filepath="$PROJECT_DIR$/.idea/modules/app-parking-system_test.iml" group="app-parking-system" />
     </modules>
   </component>
 </project>

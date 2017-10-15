@@ -1,0 +1,26 @@
+version '0.0.1'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'demo/ParkingDemo'
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    
+}
+
+jar {
+  manifest {
+    attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': 'demo.ParkingDemo'
+    )
+  }
+}
