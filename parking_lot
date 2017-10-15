@@ -1,0 +1,2 @@
+./gradlew build
+java -jar build/libs/app-parking-system-0.0.1.jar $1
